@@ -6,16 +6,27 @@ class CalendarsController < ApplicationController
     @plan = Plan.new
   end
 
+
   # 予定の保存
   def create
-    Plan.create(plan_params)
+    @plan.present?create(plan_params)
     redirect_to action: :index
   end
+  # 概要
+
+#本来であれば、予定は下記のように保存され、日付のボックスに表示される。
+#しかし今回は、DBにも保存されず、表示もされていない。
+
+#エラー画面が出ないので、パラメーターやバリデーションの問題だと思うが、問題を見つけ修正してほしい。
+
+# 正しい動作
+
+#![training](https://user-images.githubusercontent.com/46220963/79291687-3e4f3400-7f0a-11ea-98f8-c52b55a74422.gif)
 
   private
 
   def plan_params
-    params.require(:calendars).permit(:date, :plan)
+    params.require(:plan).permit(:date, :plan, :calendar)
   end
 
   def getWeek
