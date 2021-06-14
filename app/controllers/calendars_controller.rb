@@ -6,16 +6,27 @@ class CalendarsController < ApplicationController
     @plan = Plan.new
   end
 
+
   # 予定の保存
   def create
     Plan.create(plan_params)
     redirect_to action: :index
   end
+  # 概要
+
+#本来であれば、予定は下記のように保存され、日付のボックスに表示される。
+#しかし今回は、DBにも保存されず、表示もされていない。
+
+#エラー画面が出ないので、パラメーターやバリデーションの問題だと思うが、問題を見つけ修正してほしい。
+
+# 正しい動作
+
+#![training](https://user-images.githubusercontent.com/46220963/79291687-3e4f3400-7f0a-11ea-98f8-c52b55a74422.gif)
 
   private
 
   def plan_params
-    params.require(:calendars).permit(:date, :plan)
+    params.require(:plan).permit(:plan, :date)
   end
 
   def get_week
@@ -34,7 +45,14 @@ class CalendarsController < ApplicationController
       plans.each do |plan|
         today_plans.push(plan.plan) if plan.date == @todays_date + x
       end
-      days = { :month: (@todays_date + x).month, :date: (@todays_date+x).day, :plans: today_plans}
+      wday_num = Date.today # wdayメソッドを用いて取得した数
+
+      wday_num = Date.today.wday# wdayメソッドを用いて取得した数値
+      if wday_num >= 7 #「wday_numが7以上の場合」という条件式
+        wday_num = wday_num -7
+      end
+
+      days = { month: (@todays_date + x).month, date: (@todays_date + x).day, plans: today_plans, wdays: (@todays_date + x).strftime('%a') }
       @week_days.push(days)
     end
 
